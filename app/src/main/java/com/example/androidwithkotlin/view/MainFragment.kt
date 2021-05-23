@@ -25,7 +25,7 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = MainFragmentBinding.inflate(inflater, container, false)
-        return binding.getRoot()
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -56,14 +56,16 @@ class MainFragment : Fragment() {
     }
 
     private fun setData(weatherData: Weather) {
-        binding.cityName.text = weatherData.city.city
-        binding.cityCoordinates.text = String.format(
-            getString(R.string.city_coordinates),
-            weatherData.city.lat.toString(),
-            weatherData.city.lon.toString()
-        )
-        binding.temperatureValue.text = weatherData.temperature.toString()
-        binding.feelsLikeValue.text = weatherData.feelsLike.toString()
+        binding.apply {
+            cityName.text = weatherData.city.city
+            cityCoordinates.text = String.format(
+                getString(R.string.city_coordinates),
+                weatherData.city.latitude.toString(),
+                weatherData.city.longitude.toString()
+            )
+            temperatureValue.text = weatherData.temperature.toString()
+            feelsLikeValue.text = weatherData.feelsLike.toString()
+        }
     }
 
     override fun onDestroyView() {
