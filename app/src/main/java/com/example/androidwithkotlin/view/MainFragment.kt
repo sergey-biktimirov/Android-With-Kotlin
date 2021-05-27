@@ -10,16 +10,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.androidwithkotlin.R
 import com.example.androidwithkotlin.databinding.FragmentMainBinding
-import com.example.androidwithkotlin.databinding.FragmentWeatherDetailsBinding
 import com.example.androidwithkotlin.extension.DefaultListAdapter
 import com.example.androidwithkotlin.extension.createRecycleViewListAdapter
-import com.example.androidwithkotlin.model.City
-import com.example.androidwithkotlin.model.Country
 import com.example.androidwithkotlin.model.Weather
 import com.example.androidwithkotlin.viewmodel.AppState
 import com.example.androidwithkotlin.viewmodel.MainViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import com.example.androidwithkotlin.extension.showSnackbar
 
 class MainFragment : Fragment() {
 
@@ -76,14 +74,10 @@ class MainFragment : Fragment() {
                 is AppState.Error -> {
                     setLoading(false)
 
-                    Snackbar
-                        .make(
-                            binding.mainFragmentFAB,
-                            getString(R.string.error),
-                            Snackbar.LENGTH_INDEFINITE
-                        )
-                        .setAction(getString(R.string.reload)) { viewModel.loadAllWeather() }
-                        .show()
+                    binding.mainFragmentFAB.showSnackbar(
+                        messageText = getString(R.string.error),
+                        actionText = getString(R.string.reload)
+                    ) { viewModel.loadAllWeather() }
                 }
             }
         })
@@ -135,4 +129,3 @@ class MainFragment : Fragment() {
         fun newInstance() = MainFragment()
     }
 }
-
