@@ -1,28 +1,44 @@
 package com.example.androidwithkotlin.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.androidwithkotlin.model.Repository
-import com.example.androidwithkotlin.model.RepositoryImpl
-import java.lang.Thread.sleep
+import androidx.lifecycle.viewModelScope
+import com.example.androidwithkotlin.model.Country
+import com.example.androidwithkotlin.repository.IWeatherRepository
+import com.example.androidwithkotlin.repository.FakeWeatherRepository
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MainViewModel(
-    private val liveDataToObserve: MutableLiveData<AppState> = MutableLiveData(),
-    private val repositoryImpl: Repository = RepositoryImpl()
-) :
-    ViewModel() {
+    private val weatherRepository: IWeatherRepository = FakeWeatherRepository()
+) : ViewModel() {
+    private val _weatherLiveData = MutableLiveData<AppState>()
+    val weatherLiveData: LiveData<AppState>
+        get() = _weatherLiveData
 
-    fun getLiveData() = liveDataToObserve
+    fun loadAllWeather() {
+        viewModelScope.launch {
+            _weatherLiveData.value = AppState.Loading
+            delay(1000)
+            _weatherLiveData.postValue(AppState.Success(weatherRepository.getAll()))
+        }
+    }
 
-    fun getWeatherFromLocalSource() = getDataFromLocalSource()
-
-    fun getWeatherFromRemoteSource() = getDataFromLocalSource()
-
-    private fun getDataFromLocalSource() {
-        liveDataToObserve.value = AppState.Loading
-        Thread {
-            sleep(1000)
-            liveDataToObserve.postValue(AppState.Success(repositoryImpl.getWeatherFromLocalStorage()))
-        }.start()
+    fun loadAllWeatherByCountry(country: String) {
+        viewModelScope.launch {
+            _weatherLiveData.value = AppState.Loading
+            delay(1000)
+            _weatherLiveData
+                .postValue(
+                    AppState.Success(
+                        weatherRepository.getByCountry(
+                            Country(
+                                country = country
+                            )
+                        )
+                    )
+                )
+        }
     }
 }
