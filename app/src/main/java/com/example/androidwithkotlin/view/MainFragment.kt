@@ -12,12 +12,12 @@ import com.example.androidwithkotlin.R
 import com.example.androidwithkotlin.databinding.FragmentMainBinding
 import com.example.androidwithkotlin.extension.DefaultListAdapter
 import com.example.androidwithkotlin.extension.createRecycleViewListAdapter
-import com.example.androidwithkotlin.model.Weather
 import com.example.androidwithkotlin.viewmodel.AppState
 import com.example.androidwithkotlin.viewmodel.MainViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import com.example.androidwithkotlin.extension.showSnackbar
+import com.example.androidwithkotlin.model.City
+import com.example.androidwithkotlin.model.Country
 
 class MainFragment : Fragment() {
 
@@ -31,7 +31,7 @@ class MainFragment : Fragment() {
     private var isWorldWeather = true
 
     private lateinit var viewModel: MainViewModel
-    private lateinit var adapter: DefaultListAdapter<Weather>
+    private lateinit var adapter: DefaultListAdapter<City>
 
     /** Initialize recycle view adapter
      * */
@@ -39,19 +39,19 @@ class MainFragment : Fragment() {
         adapter =
             createRecycleViewListAdapter(
                 R.layout.fragment_main_city_recycler_view_item
-            ) { view, weather ->
+            ) { view, city ->
                 view.setOnClickListener {
                     activity?.let {
                         it.supportFragmentManager
                             .beginTransaction()
-                            .add(R.id.container, WeatherDetailsFragment.newInstance(weather))
+                            .add(R.id.container, WeatherDetailsFragment.newInstance(city))
                             .addToBackStack(null)
                             .commit()
                     }
                 }
 
                 view.findViewById<TextView>(R.id.mainFragmentRecyclerItemTextView).text =
-                    weather.city.city
+                    city.city
             }
 
         binding.mainFragmentRecyclerView.adapter = adapter
@@ -69,7 +69,7 @@ class MainFragment : Fragment() {
                 is AppState.Success<*> -> {
                     setLoading(false)
 
-                    adapter.submitList(it.successData as List<Weather>)
+                    adapter.submitList(it.successData as List<City>)
                 }
                 is AppState.Error -> {
                     setLoading(false)
@@ -77,17 +77,17 @@ class MainFragment : Fragment() {
                     binding.mainFragmentFAB.showSnackbar(
                         messageText = getString(R.string.error),
                         actionText = getString(R.string.reload)
-                    ) { viewModel.loadAllWeather() }
+                    ) { viewModel.loadAllCities() }
                 }
             }
         })
     }
 
     /** Show loading view holder
-     * @param loading true show loading view holder, false not show
+     * @param isLoading true show loading view holder, false not show
      * */
-    private fun setLoading(loading: Boolean) {
-        binding.mainFragmentLoadingLayout.visibility = if (loading) View.VISIBLE else View.GONE
+    private fun setLoading(isLoading: Boolean) {
+        binding.mainFragmentLoadingLayout.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
     override fun onCreateView(
@@ -105,10 +105,10 @@ class MainFragment : Fragment() {
             it as FloatingActionButton
             if (isWorldWeather) {
                 it.setImageResource(R.drawable.ic_russia)
-                viewModel.loadAllWeatherByCountry("Россия")
+                viewModel.loadCitiesByCountry(Country("Россия"))
             } else {
                 it.setImageResource(R.drawable.ic_earth)
-                viewModel.loadAllWeather()
+                viewModel.loadAllCities()
             }
 
             isWorldWeather = !isWorldWeather
@@ -117,7 +117,7 @@ class MainFragment : Fragment() {
         initCityRecycleViewAdapter()
         initViewModel()
 
-        viewModel.loadAllWeather()
+        viewModel.loadAllCities()
     }
 
     override fun onDestroyView() {
