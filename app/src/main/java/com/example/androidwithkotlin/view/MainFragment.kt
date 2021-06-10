@@ -44,7 +44,7 @@ class MainFragment : Fragment() {
                     activity?.let {
                         it.supportFragmentManager
                             .beginTransaction()
-                            .add(R.id.container, WeatherDetailsFragment.newInstance(city))
+                            .replace(R.id.container, WeatherDetailsFragment.newInstance(city))
                             .addToBackStack(null)
                             .commit()
                     }
