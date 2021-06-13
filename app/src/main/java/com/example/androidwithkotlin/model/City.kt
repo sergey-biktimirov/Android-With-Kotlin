@@ -14,6 +14,6 @@ data class City(
     val city: String,
     val latitude: Float? = null,
     val longitude: Float? = null,
-    val country: Country
+    val country: Country = Country("Unknown")
     //TODO регион, страна или часть света
 ) : Parcelable
