@@ -6,18 +6,15 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
-import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.MotionEventCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.example.androidwithkotlin.BuildConfig
 import com.example.androidwithkotlin.R
 import com.example.androidwithkotlin.broadcast_receiver.WeatherBroadcastReceiver
 import com.example.androidwithkotlin.databinding.FragmentWeatherDetailsBinding
-import com.example.androidwithkotlin.extension.TAG
-import com.example.androidwithkotlin.extension.hide
-import com.example.androidwithkotlin.extension.show
-import com.example.androidwithkotlin.extension.showSnackbar
+import com.example.androidwithkotlin.extension.*
 import com.example.androidwithkotlin.intent.WeatherConstants
 import com.example.androidwithkotlin.model.City
 import com.example.androidwithkotlin.model.Weather
@@ -68,13 +65,16 @@ class WeatherDetailsFragment : Fragment() {
         binding.apply {
             temperatureValue.text = weatherData.temperature.toString()
             feelsLikeValue.text = weatherData.feelsLike.toString()
+            weatherIconImageView
+                .loadSvgImage(BuildConfig.YANDEX_WEATHER_ICON_URL.format(weatherData.icon))
         }
     }
 
-    private fun setWeatherData(temperature: Int, feelsLike: Int) {
+    private fun setWeatherData(temperature: Int, feelsLike: Int, icon: String) {
         binding.apply {
             temperatureValue.text = temperature.toString()
             feelsLikeValue.text = feelsLike.toString()
+            weatherIconImageView.loadSvgImage(BuildConfig.YANDEX_WEATHER_ICON_URL.format(icon))
         }
     }
 
@@ -98,10 +98,17 @@ class WeatherDetailsFragment : Fragment() {
                         intent.getIntExtra(WeatherConstants.Extras.TEMPERATURE, 0)
                     val fellsLike =
                         intent.getIntExtra(WeatherConstants.Extras.FEELS_LIKE, 0)
+                    val icon =
+                        intent.getStringExtra(WeatherConstants.Extras.ICON) ?: ""
 
-                    setWeatherData(temperature, fellsLike)
+                    setWeatherData(temperature, fellsLike, icon)
 
-                    Log.d(TAG(), "weather temperature = $temperature, feelsLike = $fellsLike")
+                    Log.d(
+                        TAG(),
+                        "weather temperature = $temperature, " +
+                                "feelsLike = $fellsLike, " +
+                                "icon = $icon"
+                    )
                 }
             }
         }.apply {

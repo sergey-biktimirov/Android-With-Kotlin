@@ -16,6 +16,12 @@ class MainViewModel(
     val weatherLiveData: LiveData<AppState>
         get() = _weatherLiveData
 
+    /** Set what a weather will be shown
+     * true - world weather
+     * false - Russian weather
+     * */
+    val isWorldWeather = MutableLiveData(true)
+
     fun loadAllCities() {
         viewModelScope.launch {
             _weatherLiveData.value = AppState.Loading

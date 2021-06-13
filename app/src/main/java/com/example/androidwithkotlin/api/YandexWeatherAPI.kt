@@ -1,10 +1,12 @@
 package com.example.androidwithkotlin.api
 
 import com.example.androidwithkotlin.BuildConfig
+import com.example.androidwithkotlin.api.retrofit.DefaultInterceptor
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonRootName
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
+import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
@@ -34,6 +36,12 @@ interface YandexWeatherAPI {
                 return Retrofit.Builder()
                     .baseUrl(BuildConfig.YANDEX_WEATHER_API_BASE_URL)
                     .addConverterFactory(JacksonConverterFactory.create(jacksonObjectMapper))
+                    .client(
+                        OkHttpClient
+                            .Builder()
+                            .addNetworkInterceptor(DefaultInterceptor())
+                            .build()
+                    )
                     .build()
                     .create(YandexWeatherAPI::class.java)
             }

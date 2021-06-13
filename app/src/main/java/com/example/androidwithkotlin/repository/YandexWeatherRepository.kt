@@ -22,7 +22,8 @@ class YandexWeatherRepository : IWeatherRepository {
             return Weather(
                 city = city,
                 temperature = weatherDTO.fact?.temp ?: 0,
-                feelsLike = weatherDTO.fact?.feelsLike ?: 0
+                feelsLike = weatherDTO.fact?.feelsLike ?: 0,
+                icon = weatherDTO.fact?.icon ?: ""
             )
         } else {
             val errorBody = response.errorBody() as ResponseBody
