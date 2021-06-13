@@ -5,37 +5,32 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.androidwithkotlin.model.Country
-import com.example.androidwithkotlin.repository.IWeatherRepository
-import com.example.androidwithkotlin.repository.FakeWeatherRepository
-import kotlinx.coroutines.delay
+import com.example.androidwithkotlin.repository.FakeCityRepository
+import com.example.androidwithkotlin.repository.ICityRepository
 import kotlinx.coroutines.launch
 
 class MainViewModel(
-    private val weatherRepository: IWeatherRepository = FakeWeatherRepository()
+    private val cityRepository: ICityRepository = FakeCityRepository()
 ) : ViewModel() {
     private val _weatherLiveData = MutableLiveData<AppState>()
     val weatherLiveData: LiveData<AppState>
         get() = _weatherLiveData
 
-    fun loadAllWeather() {
+    fun loadAllCities() {
         viewModelScope.launch {
             _weatherLiveData.value = AppState.Loading
-            delay(1000)
-            _weatherLiveData.postValue(AppState.Success(weatherRepository.getAll()))
+            _weatherLiveData.postValue(AppState.Success(cityRepository.getAll()))
         }
     }
 
-    fun loadAllWeatherByCountry(country: String) {
+    fun loadCitiesByCountry(country: Country) {
         viewModelScope.launch {
             _weatherLiveData.value = AppState.Loading
-            delay(1000)
             _weatherLiveData
                 .postValue(
                     AppState.Success(
-                        weatherRepository.getByCountry(
-                            Country(
-                                country = country
-                            )
+                        cityRepository.getByCountry(
+                            country.country
                         )
                     )
                 )
