@@ -7,8 +7,8 @@ import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.core.view.MotionEventCompat
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.androidwithkotlin.BuildConfig
 import com.example.androidwithkotlin.R
@@ -18,9 +18,10 @@ import com.example.androidwithkotlin.extension.*
 import com.example.androidwithkotlin.intent.WeatherConstants
 import com.example.androidwithkotlin.model.City
 import com.example.androidwithkotlin.model.Weather
+import com.example.androidwithkotlin.repository.RoomWeatherViewHistoryRepository
+import com.example.androidwithkotlin.repository.YandexWeatherRepository
 import com.example.androidwithkotlin.service.WeatherLoaderService
-import com.example.androidwithkotlin.viewmodel.AppState
-import com.example.androidwithkotlin.viewmodel.WeatherDetailsViewModel
+import com.example.androidwithkotlin.viewmodel.*
 import kotlinx.android.synthetic.main.main_fragment.*
 
 
@@ -34,8 +35,12 @@ class WeatherDetailsFragment : Fragment() {
 
     private var _binding: FragmentWeatherDetailsBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: WeatherDetailsViewModel by lazy {
-        ViewModelProvider(this).get(WeatherDetailsViewModel::class.java)
+
+    private val weatherDetailsViewModel: WeatherDetailsViewModel by viewModels {
+        WeatherDetailsViewModelFactory(
+            YandexWeatherRepository(),
+            RoomWeatherViewHistoryRepository()
+        )
     }
     private lateinit var weatherBroadcastReceiver: WeatherBroadcastReceiver
 
@@ -131,16 +136,40 @@ class WeatherDetailsFragment : Fragment() {
     }
 
     private fun startWeatherLoaderService() {
-        Log.d(TAG(), "city = ${viewModel.city}")
+        Log.d(TAG(), "city = ${weatherDetailsViewModel.city}")
         requireContext().apply {
             this.startService(
                 Intent(this, WeatherLoaderService::class.java)
                     .apply {
                         this.action = WeatherConstants.Action.LOAD_WEATHER_BY_COORDINATES
-                        this.putExtra(WeatherConstants.Extras.LATITUDE, viewModel.city!!.latitude)
-                        this.putExtra(WeatherConstants.Extras.LONGITUDE, viewModel.city!!.longitude)
+                        this.putExtra(
+                            WeatherConstants.Extras.LATITUDE,
+                            weatherDetailsViewModel.city!!.latitude
+                        )
+                        this.putExtra(
+                            WeatherConstants.Extras.LONGITUDE,
+                            weatherDetailsViewModel.city!!.longitude
+                        )
                     }
             )
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_history -> {
+                requireActivity()
+                    .supportFragmentManager
+                    .beginTransaction()
+                    .replace(
+                        R.id.container,
+                        WeatherViewHistoryFragment.newInstance(weatherDetailsViewModel.city?.city)
+                    )
+                    .addToBackStack(null)
+                    .commit()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -153,6 +182,8 @@ class WeatherDetailsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        setHasOptionsMenu(true)
+
         _binding = FragmentWeatherDetailsBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -176,11 +207,11 @@ class WeatherDetailsFragment : Fragment() {
             if (city != null) {
                 setCityData(city)
 
-                viewModel.loadWeatherByCity(city)
+                weatherDetailsViewModel.loadWeatherByCity(city)
             }
         }
 
-        viewModel.weatherState.observe(viewLifecycleOwner, Observer {
+        weatherDetailsViewModel.weatherState.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is AppState.Loading -> {
                     setLoading(true)
@@ -196,7 +227,7 @@ class WeatherDetailsFragment : Fragment() {
                     binding.loadingLayout.showSnackbar(
                         messageText = errorState.error.localizedMessage ?: "Unknown error occurred",
                         actionText = getString(R.string.reload)
-                    ) { viewModel.reloadDataByCity() }
+                    ) { weatherDetailsViewModel.reloadDataByCity() }
                 }
             }
         })
