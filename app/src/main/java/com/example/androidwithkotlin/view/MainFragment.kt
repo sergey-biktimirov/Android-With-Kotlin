@@ -2,6 +2,7 @@ package com.example.androidwithkotlin.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -10,12 +11,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.androidwithkotlin.R
 import com.example.androidwithkotlin.databinding.FragmentMainBinding
-import com.example.androidwithkotlin.extension.DefaultListAdapter
-import com.example.androidwithkotlin.extension.createRecycleViewListAdapter
+import com.example.androidwithkotlin.extension.*
 import com.example.androidwithkotlin.viewmodel.AppState
 import com.example.androidwithkotlin.viewmodel.MainViewModel
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.example.androidwithkotlin.extension.showSnackbar
+import com.example.androidwithkotlin.intent.WeatherConstants
 import com.example.androidwithkotlin.model.City
 import com.example.androidwithkotlin.model.Country
 
@@ -75,7 +74,13 @@ class MainFragment : Fragment() {
                 }
             }
         })
+        viewModel.isWorldWeather.value =
+            preferences.getBoolean(WeatherConstants.Preferences.IS_WORLD_WEATHER_KEY, true)
         viewModel.isWorldWeather.observe(viewLifecycleOwner) { isWorldWeather ->
+            preferences
+                .edit()
+                .putBoolean(WeatherConstants.Preferences.IS_WORLD_WEATHER_KEY, isWorldWeather)
+                .apply()
             if (isWorldWeather) {
                 binding.mainFragmentFAB.setImageResource(R.drawable.ic_russia)
                 viewModel.loadCitiesByCountry(Country("Россия"))
@@ -94,10 +99,30 @@ class MainFragment : Fragment() {
         binding.mainFragmentLoadingLayout.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_history -> {
+                requireActivity()
+                    .supportFragmentManager
+                    .beginTransaction()
+                    .replace(
+                        R.id.container,
+                        WeatherViewHistoryFragment.newInstance()
+                    )
+                    .addToBackStack(null)
+                    .commit()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        setHasOptionsMenu(true)
+
         _binding = FragmentMainBinding.inflate(inflater, container, false)
         return binding.root
     }

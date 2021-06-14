@@ -21,5 +21,10 @@ class WeatherConstants {
         val FEELS_LIKE: String = "FEELS_LIKE"
         val ICON: String = "ICON"
         val ERROR_LOADING_WEATHER = "ERROR_LOADING_WEATHER"
+        val WEATHER_CITY_NAME = "WEATHER_CITY_NAME"
+    }
+
+    object Preferences {
+        val IS_WORLD_WEATHER_KEY = "IS_WORLD_WEATHER_KEY"
     }
 }
