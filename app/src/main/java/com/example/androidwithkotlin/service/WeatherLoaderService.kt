@@ -1,6 +1,5 @@
 package com.example.androidwithkotlin.service
 
-import android.app.IntentService
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
@@ -37,13 +36,18 @@ class WeatherLoaderService : Service() {
                     val lat = intent.getFloatExtra(WeatherConstants.Extras.LATITUDE, 0f)
                     val lon = intent.getFloatExtra(WeatherConstants.Extras.LONGITUDE, 0f)
 
-                    loadWeatherByCity(lat, lon)
+                    loadWeatherByLatAndLon(lat, lon)
                 }
             }
         }
     }
 
-    private fun loadWeatherByCity(lat: Float, lon: Float) {
+    /**
+     * Load weather by coordinates
+     * @param lat latitude
+     * @param lon longitude
+     */
+    private fun loadWeatherByLatAndLon(lat: Float, lon: Float) {
         sendBroadcastWeatherLoading(true)
 
         Log.d(
@@ -52,7 +56,7 @@ class WeatherLoaderService : Service() {
                     """.trimMargin()
         )
 
-        Log.d(TAG(), "weather loadeding....")
+        Log.d(TAG(), "weather loading....")
 
         CoroutineScope(Dispatchers.Main + SupervisorJob()).launch {
             try {
@@ -71,6 +75,12 @@ class WeatherLoaderService : Service() {
         }
     }
 
+    /**
+     * Send broadcast message to
+     * [com.example.androidwithkotlin.broadcast_receiver.WeatherBroadcastReceiver],
+     * that the weather is loaded
+     * @param weather Weather DTO
+     */
     private fun sendBroadcastWeatherLoaded(weather: Weather) {
         localBroadcastManager.sendBroadcast(
             Intent(WeatherConstants.Action.WEATHER_BY_COORDINATES_LOADED).apply {
@@ -82,10 +92,20 @@ class WeatherLoaderService : Service() {
                     WeatherConstants.Extras.FEELS_LIKE,
                     weather.feelsLike
                 )
+                this.putExtra(
+                    WeatherConstants.Extras.ICON,
+                    weather.icon
+                )
             }
         )
     }
 
+    /**
+     * Send broadcast message to
+     * [com.example.androidwithkotlin.broadcast_receiver.WeatherBroadcastReceiver],
+     * that the weather is loading
+     * @param isLoading true - weather is loading, false - not
+     */
     private fun sendBroadcastWeatherLoading(isLoading: Boolean) {
         localBroadcastManager.sendBroadcast(
             Intent(WeatherConstants.Action.WEATHER_BY_COORDINATES_LOADING).apply {

@@ -24,12 +24,6 @@ class MainFragment : Fragment() {
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
 
-    /** Set what a weather will be shown
-     * true - world weather
-     * false - Russian weather
-     * */
-    private var isWorldWeather = true
-
     private lateinit var viewModel: MainViewModel
     private lateinit var adapter: DefaultListAdapter<City>
 
@@ -81,6 +75,16 @@ class MainFragment : Fragment() {
                 }
             }
         })
+        viewModel.isWorldWeather.observe(viewLifecycleOwner) { isWorldWeather ->
+            if (isWorldWeather) {
+                binding.mainFragmentFAB.setImageResource(R.drawable.ic_russia)
+                viewModel.loadCitiesByCountry(Country("Россия"))
+            } else {
+                binding.mainFragmentFAB.setImageResource(R.drawable.ic_earth)
+                viewModel.loadAllCities()
+            }
+        }
+        viewModel.loadAllCities()
     }
 
     /** Show loading view holder
@@ -102,22 +106,11 @@ class MainFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         binding.mainFragmentFAB.setOnClickListener {
-            it as FloatingActionButton
-            if (isWorldWeather) {
-                it.setImageResource(R.drawable.ic_russia)
-                viewModel.loadCitiesByCountry(Country("Россия"))
-            } else {
-                it.setImageResource(R.drawable.ic_earth)
-                viewModel.loadAllCities()
-            }
-
-            isWorldWeather = !isWorldWeather
+            viewModel.isWorldWeather.value = !viewModel.isWorldWeather.value!!
         }
 
         initCityRecycleViewAdapter()
         initViewModel()
-
-        viewModel.loadAllCities()
     }
 
     override fun onDestroyView() {

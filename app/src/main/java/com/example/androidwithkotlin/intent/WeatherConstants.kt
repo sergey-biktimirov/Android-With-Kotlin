@@ -19,6 +19,7 @@ class WeatherConstants {
         val LONGITUDE = "LONGITUDE"
         val TEMPERATURE: String = "TEMPERATURE"
         val FEELS_LIKE: String = "FEELS_LIKE"
+        val ICON: String = "ICON"
         val ERROR_LOADING_WEATHER = "ERROR_LOADING_WEATHER"
     }
 }
