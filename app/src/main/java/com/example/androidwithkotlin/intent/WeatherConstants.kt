@@ -27,4 +27,12 @@ class WeatherConstants {
     object Preferences {
         val IS_WORLD_WEATHER_KEY = "IS_WORLD_WEATHER_KEY"
     }
+
+    enum class RequestCodes {
+        READ_CONTACTS
+    }
+
+    object Exceptions {
+        val UNKNOWN_VIEW_MODEL = IllegalArgumentException("Unknown view model class")
+    }
 }

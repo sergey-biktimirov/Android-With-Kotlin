@@ -2,6 +2,7 @@ package com.example.androidwithkotlin.view
 
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.example.androidwithkotlin.R
 
@@ -29,8 +30,20 @@ class MainActivity : AppCompatActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        menu?.findItem(R.id.menu_content_provider)?.isVisible = false
-        return super.onPrepareOptionsMenu(menu)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_content_provider -> {
+                    supportFragmentManager
+                    .beginTransaction()
+                    .replace(
+                        R.id.container,
+                        ContentProviderFragment.newInstance()
+                    )
+                    .addToBackStack(null)
+                    .commit()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }
