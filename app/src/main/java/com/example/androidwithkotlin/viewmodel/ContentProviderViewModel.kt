@@ -6,8 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.androidwithkotlin.db.room.entity.ContactEntity
+import com.example.androidwithkotlin.exception.viewmodel.UnknownViewModelClassException
 import com.example.androidwithkotlin.extension.getApplicationContext
-import com.example.androidwithkotlin.intent.WeatherConstants
 
 class ContentProviderViewModel : ViewModel() {
 
@@ -59,8 +59,7 @@ class ContentProviderViewModelFactory : ViewModelProvider.Factory {
         if (modelClass.isAssignableFrom(ContentProviderViewModel::class.java)) {
             return ContentProviderViewModel() as T
         } else {
-            throw WeatherConstants.Exceptions.UNKNOWN_VIEW_MODEL
+            throw UnknownViewModelClassException()
         }
     }
-
 }

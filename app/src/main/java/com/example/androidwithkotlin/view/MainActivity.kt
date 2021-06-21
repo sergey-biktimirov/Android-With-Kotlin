@@ -9,13 +9,14 @@ import com.example.androidwithkotlin.R
 class MainActivity : AppCompatActivity() {
 
     companion object {
-        lateinit var instance: MainActivity
+        private var _instance: MainActivity? = null
+        val instance: MainActivity get() = _instance!!
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        instance = this
+        _instance = this
 
         setContentView(R.layout.main_activity)
         if (savedInstanceState == null) {
@@ -33,7 +34,7 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_content_provider -> {
-                    supportFragmentManager
+                supportFragmentManager
                     .beginTransaction()
                     .replace(
                         R.id.container,
@@ -45,5 +46,10 @@ class MainActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _instance = null
     }
 }

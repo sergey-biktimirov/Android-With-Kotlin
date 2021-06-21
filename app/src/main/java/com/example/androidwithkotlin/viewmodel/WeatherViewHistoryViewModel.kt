@@ -2,6 +2,7 @@ package com.example.androidwithkotlin.viewmodel
 
 import androidx.lifecycle.*
 import com.example.androidwithkotlin.db.room.entity.WeatherViewHistoryEntity
+import com.example.androidwithkotlin.exception.viewmodel.UnknownViewModelClassException
 import com.example.androidwithkotlin.repository.IWeatherViewHistoryRepository
 import kotlinx.coroutines.launch
 
@@ -33,7 +34,7 @@ class WeatherViewHistoryViewModelFactory(private val repository: IWeatherViewHis
         if (modelClass.isAssignableFrom(WeatherViewHistoryViewModel::class.java)) {
             return WeatherViewHistoryViewModel(repository) as T
         } else {
-            throw IllegalArgumentException("Unknown view model class")
+            throw UnknownViewModelClassException()
         }
     }
 

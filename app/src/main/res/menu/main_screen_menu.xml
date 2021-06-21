@@ -6,11 +6,17 @@
         android:id="@+id/menu_content_provider"
         android:icon="@drawable/ic_launcher_foreground"
         android:title="Content provider"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/menu_history"
         android:icon="@drawable/ic_history"
         android:title="@string/view_history"
         app:showAsAction="always" />
+
+    <item
+    android:id="@+id/menu_google_maps"
+    android:icon="@android:drawable/ic_dialog_map"
+    android:title="@string/google_maps"
+    app:showAsAction="always" />
 </menu>

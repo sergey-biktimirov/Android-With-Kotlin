@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.example.androidwithkotlin.R
 import com.example.androidwithkotlin.db.room.entity.WeatherViewHistoryEntity
+import com.example.androidwithkotlin.exception.viewmodel.UnknownViewModelClassException
 import com.example.androidwithkotlin.extension.TAG
 import com.example.androidwithkotlin.extension.getStringResource
 import com.example.androidwithkotlin.model.City
@@ -84,7 +85,7 @@ class WeatherDetailsViewModelFactory(
                 weatherViewHistoryRepository
             ) as T
         } else {
-            throw IllegalArgumentException("Unknown view model class")
+            throw UnknownViewModelClassException()
         }
     }
 

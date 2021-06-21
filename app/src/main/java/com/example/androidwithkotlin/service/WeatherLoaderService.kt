@@ -33,8 +33,8 @@ class WeatherLoaderService : Service() {
         intent?.let {
             when (it.action) {
                 WeatherConstants.Action.LOAD_WEATHER_BY_COORDINATES -> {
-                    val lat = intent.getFloatExtra(WeatherConstants.Extras.LATITUDE, 0f)
-                    val lon = intent.getFloatExtra(WeatherConstants.Extras.LONGITUDE, 0f)
+                    val lat = intent.getDoubleExtra(WeatherConstants.Extras.LATITUDE, 0.0)
+                    val lon = intent.getDoubleExtra(WeatherConstants.Extras.LONGITUDE, 0.0)
 
                     loadWeatherByLatAndLon(lat, lon)
                 }
@@ -47,7 +47,7 @@ class WeatherLoaderService : Service() {
      * @param lat latitude
      * @param lon longitude
      */
-    private fun loadWeatherByLatAndLon(lat: Float, lon: Float) {
+    private fun loadWeatherByLatAndLon(lat: Double, lon: Double) {
         sendBroadcastWeatherLoading(true)
 
         Log.d(

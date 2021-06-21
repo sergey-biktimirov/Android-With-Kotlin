@@ -31,8 +31,9 @@ const val WEATHER_DETAIL_KEY = "WEATHER_DETAIL"
 
 /** Detailing weather by city
  */
-class WeatherDetailsFragment : Fragment() {
+class WeatherDetailsFragment : BaseFragment() {
 
+    // TODO: 21.06.2021 Перенести в BaseFragment
     private var _binding: FragmentWeatherDetailsBinding? = null
     private val binding get() = _binding!!
 
@@ -167,6 +168,13 @@ class WeatherDetailsFragment : Fragment() {
                     )
                     .addToBackStack(null)
                     .commit()
+                true
+            }
+            R.id.menu_google_maps -> {
+                showGoogleMaps(
+                    weatherDetailsViewModel.city?.latitude ?: 0.0,
+                    weatherDetailsViewModel.city?.longitude ?: 0.0
+                )
                 true
             }
             else -> super.onOptionsItemSelected(item)

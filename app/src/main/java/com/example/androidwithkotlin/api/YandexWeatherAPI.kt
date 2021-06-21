@@ -18,8 +18,8 @@ interface YandexWeatherAPI {
     @Headers("X-Yandex-API-Key:${BuildConfig.YANDEX_WEATHER_API_KEY}")
     @GET(BuildConfig.YANDEX_WEATHER_API_ENDPOINT)
     fun get(
-        @Query("lat") lat: Float,
-        @Query("lon") lon: Float,
+        @Query("lat") lat: Double,
+        @Query("lon") lon: Double,
         @Query("lang") lang: String = "ru_RU",
         @Query("limit") limit: Int = 7,
         @Query("hours") hours: Boolean = false,
