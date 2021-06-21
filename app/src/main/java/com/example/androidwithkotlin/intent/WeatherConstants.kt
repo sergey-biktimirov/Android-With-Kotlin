@@ -32,7 +32,14 @@ class WeatherConstants {
         READ_CONTACTS
     }
 
-    object Exceptions {
-        val UNKNOWN_VIEW_MODEL = IllegalArgumentException("Unknown view model class")
+
+    object LocationManager {
+        /** Minimum time interval between location updates in milliseconds
+         * */
+        val REFRESH_PERIOD = 60000L
+
+        /** Minimum distance between location updates in meters
+         * */
+        val MINIMAL_DISTANCE = 100f
     }
 }

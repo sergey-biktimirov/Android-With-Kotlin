@@ -1,12 +1,17 @@
 package com.example.androidwithkotlin.view
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.location.LocationManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.fragment.app.Fragment
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.androidwithkotlin.R
@@ -17,9 +22,11 @@ import com.example.androidwithkotlin.viewmodel.MainViewModel
 import com.example.androidwithkotlin.intent.WeatherConstants
 import com.example.androidwithkotlin.model.City
 import com.example.androidwithkotlin.model.Country
+import com.google.android.gms.maps.model.LatLng
 
-class MainFragment : Fragment() {
+class MainFragment : BaseFragment() {
 
+    // TODO: 21.06.2021 Перенести в BaseFragment
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
 
@@ -34,13 +41,7 @@ class MainFragment : Fragment() {
                 R.layout.fragment_main_city_recycler_view_item
             ) { view, city ->
                 view.setOnClickListener {
-                    activity?.let {
-                        it.supportFragmentManager
-                            .beginTransaction()
-                            .replace(R.id.container, WeatherDetailsFragment.newInstance(city))
-                            .addToBackStack(null)
-                            .commit()
-                    }
+                    showDetailsFragment(city)
                 }
 
                 view.findViewById<TextView>(R.id.mainFragmentRecyclerItemTextView).text =
@@ -74,6 +75,7 @@ class MainFragment : Fragment() {
                 }
             }
         })
+
         viewModel.isWorldWeather.value =
             preferences.getBoolean(WeatherConstants.Preferences.IS_WORLD_WEATHER_KEY, true)
         viewModel.isWorldWeather.observe(viewLifecycleOwner) { isWorldWeather ->
@@ -89,6 +91,39 @@ class MainFragment : Fragment() {
                 viewModel.loadAllCities()
             }
         }
+
+        baseViewModel.locationAddressLiveData.observe(viewLifecycleOwner) {
+            when (it) {
+                is AppState.NoAction -> {}
+                is AppState.Loading -> {
+                    setLoading(true)
+                }
+                is AppState.Success<*> -> {
+                    setLoading(false)
+
+                    val city = it.successData as City
+
+                    showAlertDialog(
+                        title = getString(R.string.show_weather_at_current_location),
+                        message = getString(R.string.your_current_address, city.city),
+                        positiveButtonText = getString(R.string.show)
+                    ) { _, _ ->
+                        showDetailsFragment(city)
+                    }
+
+                    baseViewModel.locationAddressLiveData.value = AppState.NoAction
+                }
+                is AppState.Error -> {
+                    setLoading(false)
+
+                    binding.mainFragmentFABLocation.showSnackbar(
+                        messageText = getString(R.string.error),
+                        actionText = getString(R.string.close)
+                    )
+                }
+            }
+        }
+
         viewModel.loadAllCities()
     }
 
@@ -102,15 +137,11 @@ class MainFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_history -> {
-                requireActivity()
-                    .supportFragmentManager
-                    .beginTransaction()
-                    .replace(
-                        R.id.container,
-                        WeatherViewHistoryFragment.newInstance()
-                    )
-                    .addToBackStack(null)
-                    .commit()
+                showHistoryFragment()
+                true
+            }
+            R.id.menu_google_maps -> {
+                showGoogleMaps()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -130,8 +161,22 @@ class MainFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        checkGpsPermission()
+
         binding.mainFragmentFAB.setOnClickListener {
             viewModel.isWorldWeather.value = !viewModel.isWorldWeather.value!!
+        }
+
+        binding.mainFragmentFABLocation.setOnClickListener {
+            // TODO: 21.06.2021 Добавить анимацию определения местоположения
+            getLocation {location ->
+                baseViewModel.getLocationAddress(
+                    LatLng(
+                        location.latitude,
+                        location.longitude
+                    )
+                )
+            }
         }
 
         initCityRecycleViewAdapter()

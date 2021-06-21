@@ -9,7 +9,7 @@ import com.google.android.material.snackbar.Snackbar
 inline fun View.showSnackbar(
     messageText: String,
     actionText: String,
-    crossinline onAction: () -> Unit
+    crossinline onAction: () -> Unit = {}
 ) {
     Snackbar
         .make(

@@ -3,13 +3,11 @@ package com.example.androidwithkotlin.view
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
@@ -18,8 +16,9 @@ import com.example.androidwithkotlin.databinding.FragmentContentProviderBinding
 import com.example.androidwithkotlin.viewmodel.ContentProviderViewModel
 import com.example.androidwithkotlin.viewmodel.ContentProviderViewModelFactory
 
-class ContentProviderFragment : Fragment() {
+class ContentProviderFragment : BaseFragment() {
 
+    // TODO: 21.06.2021 Перенести в BaseFragment
     private var _binding: FragmentContentProviderBinding? = null
     private val binding
         get() = _binding!!
@@ -29,7 +28,7 @@ class ContentProviderFragment : Fragment() {
     }
 
     private val requestPermissions = arrayOf(Manifest.permission.READ_CONTACTS)
-    private val permissionRequest =
+    private val _permissionRequest =
         registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) { permissions ->
@@ -39,7 +38,9 @@ class ContentProviderFragment : Fragment() {
                         if (it.value) {
                             contentProviderViewModel.loadAllContacts()
                         } else {
-                            showPermissionExplanationAlert(
+                            showAlertDialog(
+                                title = "Доступ к контактам",
+                                message = "Для корректной работы приложения необходим доступ к контактам",
                                 showPositiveButton = false
                             )
                         }
@@ -54,7 +55,7 @@ class ContentProviderFragment : Fragment() {
             binding.containerForContacts.apply {
                 removeAllViews()
 
-                it.forEach{
+                it.forEach {
                     addView(
                         AppCompatTextView(requireContext()).apply {
                             text = it.displayName
@@ -74,25 +75,22 @@ class ContentProviderFragment : Fragment() {
                     contentProviderViewModel.loadAllContacts()
                 }
                 shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS) -> {
-                    showPermissionExplanationAlert()
+                    showAlertDialog(
+                        title = "Доступ к контактам",
+                        message = "Для корректной работы приложения необходим доступ к контактам"
+                    ) { _, _ ->
+                        requestPermissions()
+                    }
                 }
                 else -> {
-                    permissionRequest.launch(requestPermissions)
+                    requestPermissions()
                 }
             }
         }
     }
 
-    private fun showPermissionExplanationAlert(showPositiveButton: Boolean = true) {
-        val alert = AlertDialog.Builder(requireContext())
-        alert
-            .setTitle("Доступ к контактам")
-            .setMessage("Для корректной работы приложения необходим доступ к контактам")
-            .setNegativeButton("Закрыть") { dialog, _ -> dialog.dismiss() }
-
-        if (showPositiveButton) alert.setPositiveButton("Предоставить доступ") { _, _ ->
-            permissionRequest.launch(requestPermissions)
-        }
+    private fun requestPermissions() {
+        _permissionRequest.launch(requestPermissions)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

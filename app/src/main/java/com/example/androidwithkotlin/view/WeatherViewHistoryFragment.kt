@@ -20,6 +20,8 @@ import com.example.androidwithkotlin.viewmodel.WeatherViewHistoryViewModelFactor
  * This fragment shows the history of viewing the weather forecast
  */
 class WeatherViewHistoryFragment : Fragment() {
+
+    // TODO: 21.06.2021 Перенести в BaseFragment
     private var _binding: FragmentWeatherViewHistoryBinding? = null
     private val binding get() = _binding!!
     private val viewModel: WeatherViewHistoryViewModel by viewModels {

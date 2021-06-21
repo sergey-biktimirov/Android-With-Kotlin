@@ -28,7 +28,7 @@ data class Weather(
 fun getDefaultCity() =
     City(
         "Москва",
-        55.755826f,
-        37.617299900000035f,
+        55.755826,
+        37.617299900000035,
         Country("Россия", listOf())
     )

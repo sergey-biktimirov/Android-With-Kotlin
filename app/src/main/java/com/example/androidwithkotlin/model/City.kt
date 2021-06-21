@@ -12,8 +12,8 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class City(
     val city: String,
-    val latitude: Float? = null,
-    val longitude: Float? = null,
+    val latitude: Double? = null,
+    val longitude: Double? = null,
     val country: Country = Country("Unknown")
     //TODO регион, страна или часть света
 ) : Parcelable
