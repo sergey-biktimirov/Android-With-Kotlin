@@ -2,17 +2,15 @@ package com.example.androidwithkotlin.view
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.example.androidwithkotlin.R
 import com.example.androidwithkotlin.databinding.FragmentGoogleMapsBinding
-import com.example.androidwithkotlin.intent.WeatherConstants
+import com.example.androidwithkotlin.constants.WeatherConstants
 import com.example.androidwithkotlin.model.City
 import com.example.androidwithkotlin.viewmodel.AppState
 

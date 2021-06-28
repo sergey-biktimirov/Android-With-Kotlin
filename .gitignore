@@ -53,3 +53,4 @@ project.properties
 secret.properties
 *.p12
 /api-keys.properties
+/app/google-services.json

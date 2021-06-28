@@ -5,7 +5,6 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import androidx.fragment.app.Fragment
 import androidx.core.view.MotionEventCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -15,7 +14,7 @@ import com.example.androidwithkotlin.R
 import com.example.androidwithkotlin.broadcast_receiver.WeatherBroadcastReceiver
 import com.example.androidwithkotlin.databinding.FragmentWeatherDetailsBinding
 import com.example.androidwithkotlin.extension.*
-import com.example.androidwithkotlin.intent.WeatherConstants
+import com.example.androidwithkotlin.constants.WeatherConstants
 import com.example.androidwithkotlin.model.City
 import com.example.androidwithkotlin.model.Weather
 import com.example.androidwithkotlin.repository.RoomWeatherViewHistoryRepository

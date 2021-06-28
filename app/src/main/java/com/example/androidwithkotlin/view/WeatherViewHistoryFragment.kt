@@ -11,7 +11,7 @@ import com.example.androidwithkotlin.R
 import com.example.androidwithkotlin.databinding.FragmentWeatherViewHistoryBinding
 import com.example.androidwithkotlin.db.room.entity.WeatherViewHistoryEntity
 import com.example.androidwithkotlin.extension.*
-import com.example.androidwithkotlin.intent.WeatherConstants
+import com.example.androidwithkotlin.constants.WeatherConstants
 import com.example.androidwithkotlin.repository.RoomWeatherViewHistoryRepository
 import com.example.androidwithkotlin.viewmodel.WeatherViewHistoryViewModel
 import com.example.androidwithkotlin.viewmodel.WeatherViewHistoryViewModelFactory
