@@ -13,7 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.androidwithkotlin.R
-import com.example.androidwithkotlin.intent.WeatherConstants
+import com.example.androidwithkotlin.constants.WeatherConstants
 import com.example.androidwithkotlin.model.City
 import com.example.androidwithkotlin.viewmodel.BaseViewModel
 import com.example.androidwithkotlin.viewmodel.BaseViewModelFactory

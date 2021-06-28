@@ -1,4 +1,4 @@
-package com.example.androidwithkotlin.intent
+package com.example.androidwithkotlin.constants
 
 class WeatherConstants {
     object Action {

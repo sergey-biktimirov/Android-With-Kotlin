@@ -1,17 +1,11 @@
 package com.example.androidwithkotlin.view
 
-import android.Manifest
-import android.content.Context
-import android.content.pm.PackageManager
-import android.location.LocationManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.androidwithkotlin.R
@@ -19,7 +13,7 @@ import com.example.androidwithkotlin.databinding.FragmentMainBinding
 import com.example.androidwithkotlin.extension.*
 import com.example.androidwithkotlin.viewmodel.AppState
 import com.example.androidwithkotlin.viewmodel.MainViewModel
-import com.example.androidwithkotlin.intent.WeatherConstants
+import com.example.androidwithkotlin.constants.WeatherConstants
 import com.example.androidwithkotlin.model.City
 import com.example.androidwithkotlin.model.Country
 import com.google.android.gms.maps.model.LatLng
